@@ -1,0 +1,9 @@
+# 1. The Goal (What the client sends to the server)
+float32 target_battery_level
+---
+# 2. The Result (What the server sends back when finished)
+bool success
+string message
+---
+# 3. The Feedback (What the server streams back while charging)
+float32 current_battery_level

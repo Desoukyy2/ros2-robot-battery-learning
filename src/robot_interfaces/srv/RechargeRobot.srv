@@ -1,0 +1,6 @@
+# Request (What the client sends)
+float32 charge_amount
+---
+# Response (What the server replies with)
+bool success
+string message

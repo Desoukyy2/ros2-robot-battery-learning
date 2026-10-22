@@ -25,6 +25,9 @@ endif()
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/RobotStatus.msg"
+  "srv/RechargeRobot.srv"
+  "action/Recharge.action"
+
 )
 
 ament_export_dependencies(rosidl_default_runtime)

@@ -21,7 +21,10 @@ setup(
     entry_points={
         'console_scripts': [ 'run_node = robot_control.my_node:main',
                             'battery_pub = robot_control.battery_publisher:main',
-                            'battery_sub = robot_control.battery_subscriber:main'
+                            'battery_sub = robot_control.battery_subscriber:main',
+                            'recharge_server = robot_control.recharge_server:main',
+                            'recharge_client = robot_control.recharge_client:main',
+                            'recharge_action_client = robot_control.recharge_action_client:main'
         ],
     },
 )
