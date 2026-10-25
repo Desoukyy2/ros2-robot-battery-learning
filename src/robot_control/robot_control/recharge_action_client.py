@@ -4,6 +4,7 @@ from action_msgs.msg import GoalStatus
 from rclpy.node import Node
 from robot_interfaces.msg import RobotStatus
 from robot_interfaces.action import Recharge
+from std_srvs.srv import Trigger
 
 class  RechargeActionClient(Node):
 
@@ -12,7 +13,8 @@ class  RechargeActionClient(Node):
        self._action_client = ActionClient(self , Recharge , 'recharge_robot_action' )
        while not self._action_client.wait_for_server(timeout_sec=1.0):
             self.get_logger().info("Waiting for action server")
-
+       self.cancel_recharge = self.create_service(Trigger , 'cancel_recharge' , self.cancel_recharge_callback)
+       self.resume_recharge = self.create_service(Trigger , 'resume_recharge' , self.resume_recharge_callback)
        self.subscription = self.create_subscription(
                RobotStatus, 'battery_topic', self.battery_callback, 10
            )
@@ -25,6 +27,29 @@ class  RechargeActionClient(Node):
       req.target_battery_level = target_value
       self.future = self._action_client.send_goal_async(req ,feedback_callback=self.feedback_callback )
       self.future.add_done_callback(self.goal_response_callback)
+
+    def cancel_recharge_callback(self , request , response ):
+       if self.goal_handle is None:
+          response.success = False
+          response.message = 'No active recharge goal to cancel'
+          self.get_logger().info(response.message)
+       else:
+         self.cancel_request()
+         response.success = True
+         response.message = 'Cancellation request has been submitted'
+
+       return response
+
+    def resume_recharge_callback(self , request , response ):
+            self.resume_request()
+            response.success = True
+            response.message = 'Automatic recharging has been resumed'
+            self.get_logger().info(response.message)
+            return response
+
+    def resume_request(self):
+          self.get_logger().info('Requesting auto charging resume request')
+          self.auto_recharge_paused = False
 
     def feedback_callback(self, feedback_msg):
       feedback = feedback_msg.feedback
